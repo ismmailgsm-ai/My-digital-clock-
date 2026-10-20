@@ -1,0 +1,52 @@
+
+name: Build Digital Clock APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "main.py"
+      - "Main.py"
+      - "buildozer.spec"
+      - ".github/workflows/build-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Check Python file
+        run: |
+          if [ ! -f main.py ]; then
+            if [ -f Main.py ]; then
+              cp Main.py main.py
+            else
+              echo "ERROR: main.py or Main.py is missing"
+              exit 1
+            fi
+          fi
+          python3 -m py_compile main.py
+
+      - name: Build APK with Buildozer
+        id: buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          workdir: .
+          buildozer_version: stable
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: My-Digital-Clock-APK
+          path: ${{ steps.buildozer.outputs.filename }}
+          if-no-files-found: error
+          retention-days: 7
