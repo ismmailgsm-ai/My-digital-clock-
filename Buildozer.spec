@@ -3,11 +3,10 @@
 
 title = My Digital Clock
 package.name = mydigitalclock
-package.domain = org.ismail.clock
-
+package.domain = com.ismmailgsm
 source.dir = .
-source.include_exts = py,kv,png,jpg,atlas
-version = 1.0.0
+source.include_exts = py,kv,png,jpg,ttf
+version = 2.0.0
 
 requirements = python3,kivy
 
