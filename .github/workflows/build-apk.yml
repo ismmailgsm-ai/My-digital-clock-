@@ -73,10 +73,3 @@ jobs:
           path: bin/*.apk
           if-no-files-found: error
           retention-days: 7
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: digital-clock-apk
-          path: bin/*.apk
-          if-no-files-found: error
