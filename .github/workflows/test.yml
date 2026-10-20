@@ -1,0 +1,36 @@
+
+name: Test Digital Clock
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project files
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check Python version
+        run: python --version
+
+      - name: List project files
+        run: ls -la
+
+      - name: Test clock script if present
+        run: |
+          if [ -f main.py ]; then
+            python -m py_compile main.py
+          elif [ -f clock.py ]; then
+            python -m py_compile clock.py
+          else
+            echo "No main.py or clock.py found yet. Workflow setup succeeded."
+          fi
