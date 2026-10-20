@@ -6,6 +6,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "main.py"
+      - "Main.py"
+      - "buildozer.spec"
+      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: read
@@ -26,10 +31,10 @@ jobs:
             cp Main.py main.py
           fi
 
-          test -f main.py || {
+          if [ ! -f main.py ]; then
             echo "ERROR: main.py is missing"
             exit 1
-          }
+          fi
 
           python3 -m py_compile main.py
 
@@ -40,10 +45,10 @@ jobs:
             git zip unzip \
             openjdk-17-jdk \
             build-essential \
-            autoconf automake libtool pkg-config \
-            zlib1g-dev libffi-dev libssl-dev \
+            autoconf automake libtool libltdl-dev \
+            pkg-config zlib1g-dev \
             libncurses5-dev libncursesw5-dev \
-            cmake
+            libffi-dev libssl-dev cmake
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -53,13 +58,13 @@ jobs:
       - name: Install Buildozer
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install buildozer cython
+          python -m pip install "Cython==0.29.33" buildozer
 
-      - name: Build APK
+      - name: Build Android APK
         run: |
           buildozer android debug
         env:
-          P4A_RELEASE_KEYSTORE: ""
+          ACCEPT_EULA: "Y"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
